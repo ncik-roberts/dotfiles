@@ -1,0 +1,36 @@
+#!/bin/bash
+# Updates dotfiles from home directory, prompting user whether {s,}he wants
+# to overwrite them.
+any=
+for dotfile in .[^.]*; do
+  if [ ! -d $dotfile ] && \
+     [ -r ~/$dotfile ] && \
+     ! diff ~/$dotfile $dotfile &>/dev/null
+  then
+    any=1
+    echo "Do you wish to overwrite $dotfile with ~/$dotfile?"
+    select yn in "Yes" "No"; do
+      echo $yn
+      case $yn in
+        Yes)
+          cp ~/$dotfile $dotfile
+          echo "Copied ~/$dotfile over $dotfile"
+          break
+          ;;
+        No)
+          echo "Skipping..."
+          break
+          ;;
+        *)
+          echo "Invalid option. (Make sure you're entering a number.)"
+          ;;
+      esac
+    done
+  fi
+done
+
+if [ -z $any ]; then
+  echo "Nothing to update!"
+else
+  echo "Done!"
+fi
