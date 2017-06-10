@@ -10,7 +10,6 @@ for dotfile in .[^.]*; do
     any=1
     echo "Do you wish to overwrite $dotfile with ~/$dotfile?"
     select yn in "Yes" "No"; do
-      echo $yn
       case $yn in
         Yes)
           cp ~/$dotfile $dotfile
