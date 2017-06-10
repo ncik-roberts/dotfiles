@@ -52,6 +52,15 @@ rlwrap() {
   fi
 }
 
+# Go up to top level of git repo
+gitup() {
+  top=$(git rev-parse --show-toplevel 2>/dev/null)
+  if [ $? -eq 0 ]; then
+    cd $top
+  fi
+}
+
+
 # ----- shell settings and completion -------------------------------------
 
 # Make .bash_history store more and not store duplicates
