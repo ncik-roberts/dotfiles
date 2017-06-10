@@ -1,9 +1,55 @@
-# Run with setup_vim_plugins to git clone these plugins
-# into ~/.vim/autoload.
+#!/bin/bash
+#
+# Usage: ./vim_plugins [-v] [<dir>]
+#
+# Run to set up your favorite plugins in dir/autoload, dir/bundle, and dir/colors.
+# By default, dir is ~/.vim
 #
 # WARNING: It's your responsibility to verify the non-maliciousness
 # of these plugins before you run arbitrary code.
-#
-# Only lines starting with a # (no space) will be skipped
-https://github.com/vim-syntastic/syntastic
-https://github.com/jez/vim-better-sml
+
+
+s=-sS # Silence curl output by default
+q=-q # Silence git clone output by default
+
+# Show output
+if [ $1 == -v ]; then
+  q=""
+  s=""
+  shift
+fi
+
+dir=${1:-~/.vim}
+
+echo "Making subdirectories of $dir... {autoload,bundle,colors}"
+mkdir -p $dir/{autoload,bundle,colors}
+
+##################################
+# Download pathogen
+##################################
+echo "Downloading pathogen into $dir/autoload ..."
+curl $s -Lo $dir/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+
+##################################
+# Download plugins from github
+##################################
+declare -A bundle
+bundle=([syntastic]=vim-syntastic [vim-better-sml]=jez)
+
+echo "Downloading plugins into $dir/bundle ..."
+for repo_name in ${!bundle[@]}; do
+  user=${bundle[$repo_name]}
+  git clone $q https://github.com/$user/$repo_name $dir/bundle/$repo_name
+done
+
+##################################
+# Download colors from wherever
+##################################
+declare -A colors
+colors[solarized.vim]=https://github.com/altercation/vim-colors-solarized/blob/master/colors/solarized.vim
+colors[zenburn.vim]=https://raw.githubusercontent.com/jnurmine/Zenburn/v2.25/colors/zenburn.vim
+
+echo "Downloading colors into $dir/colors ..."
+for key in ${!colors[@]}; do
+  curl $s -Lo $dir/colors/$key ${colors[$key]}
+done
