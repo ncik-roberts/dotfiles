@@ -1,0 +1,9 @@
+[user]
+	name = Nick Roberts
+	email = nroberts@andrew.cmu.edu
+[core]
+        editor = vim
+[push]
+	default = simple
+[alias]
+	exec = "!exec "
