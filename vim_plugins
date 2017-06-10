@@ -1,0 +1,9 @@
+# Run with setup_vim_plugins to git clone these plugins
+# into ~/.vim/autoload.
+#
+# WARNING: It's your responsibility to verify the non-maliciousness
+# of these plugins before you run arbitrary code.
+#
+# Only lines starting with a # (no space) will be skipped
+https://github.com/vim-syntastic/syntastic
+https://github.com/jez/vim-better-sml
