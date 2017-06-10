@@ -51,10 +51,10 @@ nnoremap Y y$
 filetype plugin indent on
 syntax on
 
-" Set colorscheme to zenburn with visual mode highlighting
-" Note that this must be below the previous lines
-set t_Co=16
-colorscheme zenburn
+" Only show what we can
+set t_Co=100
+
+" Highlight in visual mode
 highlight Visual cterm=reverse ctermbg=NONE
 
 " Syntax highlighting for different kinds of files
