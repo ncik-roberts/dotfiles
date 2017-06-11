@@ -99,27 +99,25 @@ exit_status () {
   [ $? == 0 ] || echo "[$?]"
 }
 
-COLOR1="\[\033[1;32m\]"
-COLOR2="\[\033[1;36m\]"
-COLOR3="\[\033[0;92m\]"
-COLOR4="\[\033[0m\]"
-
-# Don't escape these; we're using with echo
-COLOR5="\033[1;35m"
-COLOR6="\e[0;31m"
+COLOR1='\[\033[1;32m\]'
+COLOR2='\[\033[1;36m\]'
+COLOR3='\[\033[0;92m\]'
+COLOR4='\[\033[0m\]'
+COLOR5='\[\033[1;35m\]'
+COLOR6='\[\e[0;31m\]'
 
 cute_git_thing () {
   ex=$(exit_status)
   bn=$(branchname)
   if [ ! -z $bn ]; then
-    echo -en "$COLOR5 ($bn)"
+    echo -n " ($bn)"
   fi
   if [ ! -z $ex ]; then
-    echo -e "$COLOR6 $ex"
+    echo " $ex"
   fi
 }
 
-PS1="$COLOR1\u:$COLOR2\w\$(cute_git_thing) $COLOR3\$ $COLOR4"
+PS1="$COLOR1\u:$COLOR2\w$COLOR5\$(cute_git_thing) $COLOR3\$ $COLOR4"
 
 export PATH=$PATH":$HOME/bin"
 export PATH="$HOME/node_modules/jpm/bin/:$PATH"
@@ -140,4 +138,3 @@ set -o noclobber
 # THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/nick/.sdkman"
 [[ -s "/home/nick/.sdkman/bin/sdkman-init.sh" ]] && source "/home/nick/.sdkman/bin/sdkman-init.sh"
-
