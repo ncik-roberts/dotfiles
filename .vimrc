@@ -193,4 +193,11 @@ for tool in s:opam_packages
     call s:opam_configuration[tool]()
   endif
 endfor
+
+" Syntastic error window will show Merlin errors
+let g:syntastic_ocaml_checkers = ['merlin']
+
+" <leader>a to autocomplete
+inoremap /. 
+
 " ## end of OPAM user-setup addition for vim / base ## keep this line
