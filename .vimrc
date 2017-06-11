@@ -52,7 +52,7 @@ filetype plugin indent on
 syntax on
 
 " Only show what we can
-set t_Co=100
+set t_Co=256
 
 " Highlight in visual mode
 highlight Visual cterm=reverse ctermbg=NONE
