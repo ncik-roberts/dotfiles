@@ -129,12 +129,13 @@ export JAVA_HOME="/home/nick/bin/java/jdk1.8.0_101/jre"
 export PATH="$PATH:$JAVA_HOME/bin:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export COURSE=~/Documents/cmu-coursework/
 
-# Don't delete files without asking please
-set -o noclobber
-
 # OCaml setup
 . /home/nick/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
 # THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/nick/.sdkman"
 [[ -s "/home/nick/.sdkman/bin/sdkman-init.sh" ]] && source "/home/nick/.sdkman/bin/sdkman-init.sh"
+
+# Don't delete files without asking please
+set -o noclobber
+
