@@ -5,7 +5,7 @@ any=
 for dotfile in .[^.]*; do
   if [ ! -d $dotfile ] && \
      [ -r ~/$dotfile ] && \
-     ! diff ~/$dotfile $dotfile &>/dev/null
+     ! diff ~/$dotfile $dotfile
   then
     any=1
     echo "Do you wish to overwrite $dotfile with ~/$dotfile?"
