@@ -1,6 +1,7 @@
 [user]
-	name = Nick Roberts
+	name = ncik-roberts
 	email = nroberts@andrew.cmu.edu
+	username = ncik-roberts
 [core]
         editor = vim
 [push]

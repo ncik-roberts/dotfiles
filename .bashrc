@@ -29,9 +29,9 @@ ff() {
 
 alias killz='killall -9 '
 alias hidden='ls -a | grep "^\..*"'
-alias rm='rm -vi'
-alias cp='cp -vi'
-alias mv='mv -vi'
+alias rm='rm -v'
+alias cp='cp -v'
+alias mv='mv -v'
 alias shell='ps -p $$ -o comm='
 alias smlnj='rlwrap sml'
 alias coin='rlwrap coin'
@@ -119,23 +119,30 @@ cute_git_thing () {
 
 PS1="$COLOR1\u:$COLOR2\w$COLOR5\$(cute_git_thing) $COLOR3\$ $COLOR4"
 
-export PATH=$PATH":$HOME/bin"
+export PATH=$PATH":$HOME/bin:$HOME/eclipse/java-oxygen"
 export PATH="$HOME/node_modules/jpm/bin/:$PATH"
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
-export JAVA_HOME="/home/nick/bin/java/jdk1.8.0_101/jre"
-export PATH="$PATH:$JAVA_HOME/bin:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+JAVA="/home/nick/bin/java/jdk1.8.0_144"
+export JAVA_HOME="$JAVA/jre"
+
+# Add eclipse
+export PATH="$PATH:$HOME/eclipse/java-oxygen/eclipse"
+
+export PATH="$PATH:$JAVA_HOME/bin:$JAVA/bin:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+# compilers
+export PATH="$PATH:$HOME/compilers/cc0/bin"
 export COURSE=~/Documents/cmu-coursework/
+
+export CLASSPATH=.
 
 # OCaml setup
 . /home/nick/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
+
 # THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/nick/.sdkman"
 [[ -s "/home/nick/.sdkman/bin/sdkman-init.sh" ]] && source "/home/nick/.sdkman/bin/sdkman-init.sh"
-
-# Don't delete files without asking please
-set -o noclobber
-
