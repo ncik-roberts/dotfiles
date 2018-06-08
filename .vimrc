@@ -50,17 +50,23 @@ nnoremap Y y$
 " Enable filetype detection and syntax highlighting
 filetype plugin indent on
 syntax on
+"colorscheme nord
+"let g:nord_italic = 1
+"let g:nord_italic_comments = 1
 
 " Only show what we can
-set t_Co=256
+"set t_Co=256
 
 " Highlight in visual mode
 highlight Visual cterm=reverse ctermbg=NONE
 
 " Syntax highlighting for different kinds of files
-au BufRead,BufNewFile *.c1 setlocal filetype=c0
+au BufRead,BufNewFile *.l6 setlocal filetype=c0
 au BufRead,BufNewFile *.sig setlocal filetype=sml
 au BufRead,BufNewFile *.html setlocal nowrap
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
 
 """""""""""""""""""""""""""""""""""""""""""""""""
 " Set the flags and options that I like :)
@@ -69,10 +75,10 @@ au BufRead,BufNewFile *.html setlocal nowrap
 " Show multicharacter commands as they are being typed
 set autoindent  " autoindent on new lines
 set backspace=indent,eol,start " Better backspacing
-set conceallevel=2 " Do nice syntax hiding in LaTeX
+set conceallevel=1 " Do nice syntax hiding in LaTeX
 set encoding=utf-8 " UTF-8 character encoding
 set equalalways  " Split windows equal size
-set expandtab  " Expand tabs into spaces
+" set expandtab  " Expand tabs into spaces
 set formatoptions=croq  " Enable comment line auto formatting
 set hlsearch  " Highlight on search
 set incsearch  " Start searching immediately
@@ -84,6 +90,7 @@ set number " Show line number on current line
 set relativenumber " On all lines except for current line, show how far away
 set ruler  " Show bottom ruler
 set scrolloff=5  " Never scroll off
+set shellcmdflag=-ic
 set showcmd " Show keystrokes as you press them
 set showmatch  " Highlight matching braces
 set softtabstop=2  "Tab spaces in no hard tab mode
@@ -100,7 +107,7 @@ set wrap  " Visually wrap lines
 """""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Strip whitespace from end of lines when writing file
-autocmd BufWritePre * :%s/\s\+$//e
+" autocmd BufWritePre * :%s/\s\+$//e
 " Auto-indent files
 autocmd BufWritePre *.html :normal gg=G
 
@@ -133,6 +140,7 @@ function! FtpluginSML()
   nnoremap <buffer> <localleader>d ^xx$xx<esc>
   vnoremap <buffer> <localleader>c <esc>`<I(*<esc>`>A*)<esc>
   vnoremap <buffer> <localleader>d <esc>`<^xx<esc>`>$xx<esc>
+  set t_Co=100
 endfunction
 
 autocmd Filetype sml,ocaml call FtpluginSML()
@@ -162,42 +170,4 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 augroup END
 
-" ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
-let s:opam_share_dir = system("opam config var share")
-let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
-
-let s:opam_configuration = {}
-
-function! OpamConfOcpIndent()
-  execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
-endfunction
-let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
-
-function! OpamConfOcpIndex()
-  execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
-endfunction
-let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
-
-function! OpamConfMerlin()
-  let l:dir = s:opam_share_dir . "/merlin/vim"
-  execute "set rtp+=" . l:dir
-endfunction
-let s:opam_configuration['merlin'] = function('OpamConfMerlin')
-
-let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
-let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
-let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
-for tool in s:opam_packages
-  " Respect package order (merlin should be after ocp-index)
-  if count(s:opam_available_tools, tool) > 0
-    call s:opam_configuration[tool]()
-  endif
-endfor
-
-" Syntastic error window will show Merlin errors
-let g:syntastic_ocaml_checkers = ['merlin']
-
-" <leader>a to autocomplete
 inoremap /. 
-
-" ## end of OPAM user-setup addition for vim / base ## keep this line

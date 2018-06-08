@@ -1,44 +1,62 @@
-# ----- guard against non-interactive logins ---------------------------------
-[ -z "$PS1" ] && return
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=250000
+HISTFILESIZE=250000
 
 
-# ----- convenient alias and function definitions ----------------------------
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
 
-# color support for ls and grep
-alias grep='grep --color=auto'
-if [[ `uname` = "Darwin" || `uname` = "FreeBSD" ]]; then
-  alias ls='ls -G'
-else
-  alias ls='ls --color=auto'
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# Run firefox plugin debugger
-ff() {
-  if [[ $@ == "-test" ]]; then
-    command jpm test -b /usr/bin/firefox
-  else
-    command jpm run -b /usr/bin/firefox
-  fi
-}
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
 
-### cc <arguments to gcc> -- Invokes gcc with the flags you will usually use
-### valgrind-leak <arguments to valgrind> -- Invokes valgrind in the mode to show all leaks
-### hidden <arguments to ls> -- Displays ONLY the hidden files
-### killz <program name> -- Kills all programs with the given program name
-### shell -- Displays the name of the shell being used
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+#force_color_prompt=yes
 
-alias killz='killall -9 '
-alias hidden='ls -a | grep "^\..*"'
-alias rm='rm -v'
-alias cp='cp -v'
-alias mv='mv -v'
-alias shell='ps -p $$ -o comm='
-alias smlnj='rlwrap sml'
-alias coin='rlwrap coin'
-alias ocaml='rlwrap ocaml'
-alias perl='rlwrap perl'
-alias cc='gcc -Wall -W -ansi -pedantic -O2 '
-alias valgrind-leak='valgrind --leak-check=full --show-reachable=yes'
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
 
 # Make directory for storing rlwrap history
 mkdir -p ~/.rlwrap
@@ -59,36 +77,6 @@ gitup() {
     cd $top
   fi
 }
-
-
-# ----- shell settings and completion -------------------------------------
-
-# Make .bash_history store more and not store duplicates
-export HISTCONTROL=ignoreboth
-export HISTSIZE=250000
-export HISTFILESIZE=250000
-
-# Append to the history file, don't overwrite it
-shopt -s histappend
-
-# Check the window size after each command and, if necessary,
-# Update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# Enable programmable completion features
-if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-fi
-
-bind "set completion-ignore-case on"
-
-# Make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe.sh ] && export LESSOPEN="|/usr/bin/lesspipe.sh %s"
-
-# Turn off the ability for other people to message your terminal using wall
-mesg n
-
-
 # ----- change the prompt ----------------------------------------------------
 
 branchname () {
@@ -117,32 +105,80 @@ cute_git_thing () {
   fi
 }
 
-PS1="$COLOR1\u:$COLOR2\w$COLOR5\$(cute_git_thing) $COLOR3\$ $COLOR4"
 
-export PATH=$PATH":$HOME/bin:$HOME/eclipse/java-oxygen"
-export PATH="$HOME/node_modules/jpm/bin/:$PATH"
+if [ "$color_prompt" = yes ]; then
+    PS1="$COLOR1\u:$COLOR2\w$COLOR5\$(cute_git_thing) $COLOR3\$ $COLOR4"
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
 
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
 
-JAVA="/home/nick/bin/java/jdk1.8.0_144"
-export JAVA_HOME="$JAVA/jre"
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
 
-# Add eclipse
-export PATH="$PATH:$HOME/eclipse/java-oxygen/eclipse"
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
 
-export PATH="$PATH:$JAVA_HOME/bin:$JAVA/bin:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# compilers
-export PATH="$PATH:$HOME/compilers/cc0/bin"
-export COURSE=~/Documents/cmu-coursework/
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
 
-export CLASSPATH=.
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# OCaml setup
-. /home/nick/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
 
-# THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/nick/.sdkman"
-[[ -s "/home/nick/.sdkman/bin/sdkman-init.sh" ]] && source "/home/nick/.sdkman/bin/sdkman-init.sh"
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+# Enable programmable completion features
+if [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+fi
+
+bind "set completion-ignore-case on"
+
+# Make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe.sh ] && export LESSOPEN="|/usr/bin/lesspipe.sh %s"
+
+# Turn off the ability for other people to message your terminal using wall
+mesg n
+
+# Check the window size after each command and, if necessary,
+# Update the values of LINES and COLUMNS.
+shopt -s checkwinsize
